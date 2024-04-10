@@ -212,7 +212,7 @@ func (db *DB) GetAllOpPubKeys() ([]*OpAddrPubKeyBO, error) {
 }
 
 func (db *DB) SaveOpPubKey(pubkeyBO *OpAddrPubKeyBO) error {
-	q := `insert into op_addr_pubkey (addr, pubkey) values ($1, $2) ON CONFLICT do update set pubkey = $2`
+	q := `upsert into op_addr_pubkey (addr, pubkey) values ($1, $2)`
 	pubkey, _ := json.Marshal(pubkeyBO.PubKey)
 	_, err := db.Exec(q, pubkeyBO.Addr.Hex(), string(pubkey))
 	if err != nil {
