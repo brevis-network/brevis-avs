@@ -12,7 +12,7 @@ Suggested hardware configuration: AWS C5/C6 2x large equivalent, 500GB disk, no 
 
 Contact Brevis team for any issue or questions. 
 
-## Gateway Functions
+## Gateway Functions（Gateway is Run by Brevis Team）
 - `brevis gw` cmd, needs a different config eg. gateway.toml
 - accepts sig requests from eigenlayer operators, aggregate sigs, then send onchain
 - accepts query requests from eigelayer operators, to query the original request data of a request ID
