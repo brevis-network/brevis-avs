@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/celer-network/goutils/log"
+	"github.com/ethereum/go-ethereum/common"
 
 	"github.com/go-gorp/gorp"
 	_ "github.com/lib/pq"
@@ -73,6 +74,23 @@ func NewQuery(hash string, chainId, targetChainId uint64, requestData *RequestDa
 	}
 }
 
+func NewOpAddrPubKey(addr common.Address, pubKey *OpPubKey) *OpAddrPubKey {
+	pubKeyJson, _ := json.Marshal(pubKey)
+	return &OpAddrPubKey{
+		Addr:   addr.Hex(),
+		PubKey: string(pubKeyJson),
+	}
+}
+
+type OpAddrPubKey struct {
+	Addr   string `db:"addr"`
+	PubKey string `db:"pubkey"`
+}
+
+type BlsApkStartBlk struct {
+	Block uint64 `db:"block"`
+}
+
 func NewDB() *DB {
 	log.Infoln("init db")
 	dbUrl := viper.GetString(kDb)
@@ -93,6 +111,9 @@ func NewDB() *DB {
 	dbmap.AddTableWithName(MonitorBlock{}, "monitor_block").SetKeys(false, "event")
 	queryTable := dbmap.AddTableWithName(Query{}, "query").SetKeys(false, "hash", "target_chain_id")
 	queryTable.AddIndex("idx_status_createtime", "Hash", []string{"status", "create_time"})
+
+	dbmap.AddTableWithName(OpAddrPubKey{}, "op_addr_pubkey").SetKeys(false, "addr")
+	dbmap.AddTableWithName(BlsApkStartBlk{}, "bls_apk_start_blk")
 
 	log.Infoln("sync tables")
 	err = dbmap.CreateTablesIfNotExists()
@@ -167,6 +188,70 @@ func (db *DB) GetToBeFulfilledQueries(period time.Duration) ([]*Query, error) {
 		queries = append(queries, query)
 	}
 	return queries, nil
+}
+
+func (db *DB) GetAllOpPubKeys() ([]*OpAddrPubKeyBO, error) {
+	records := []OpAddrPubKey{}
+	_, err := db.Select(&records, "select * from op_addr_pubkey")
+	if err != nil {
+		return nil, err
+	}
+
+	var ret []*OpAddrPubKeyBO
+	for _, r := range records {
+		addr := common.HexToAddress(r.Addr)
+		var pubkey OpPubKey
+		json.Unmarshal([]byte(r.PubKey), &pubkey)
+		ret = append(ret, &OpAddrPubKeyBO{
+			Addr:   addr,
+			PubKey: pubkey,
+		})
+	}
+
+	return ret, nil
+}
+
+func (db *DB) SaveOpPubKey(pubkeyBO *OpAddrPubKeyBO) error {
+	q := `upsert into op_addr_pubkey (addr, pubkey) values ($1, $2)`
+	pubkey, _ := json.Marshal(pubkeyBO.PubKey)
+	_, err := db.Exec(q, pubkeyBO.Addr.Hex(), string(pubkey))
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (db *DB) GetBlsApkStartBlk() (uint64, error) {
+	records := []BlsApkStartBlk{}
+	_, err := db.Select(&records, "select * from bls_apk_start_blk")
+	if err != nil {
+		return 0, err
+	}
+
+	var block uint64
+	for _, r := range records {
+		block = r.Block
+		break
+	}
+	return block, nil
+}
+
+func (db *DB) UpdateBlsApkStartBlk(blk uint64) error {
+	blkInDB, err := db.GetBlsApkStartBlk()
+	if err != nil {
+		return err
+	}
+
+	if blkInDB == 0 {
+		db.Insert(&BlsApkStartBlk{Block: blk})
+	} else {
+		q := `update bls_apk_start_blk set block = $1 where 1 = 1`
+		_, err = db.Exec(q, blk)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func closeRows(rows *sql.Rows) {
