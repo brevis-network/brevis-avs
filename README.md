@@ -1,16 +1,16 @@
 # Brevis + EigenLayer
-## Operator
-1. Make sure total stake > 32 eth, we support same strategies as Eigen DA
-2. Add bls and ecdsa key of Eigenlayer info to config file  (eg. brevis.toml), both are required to join Brevis. Also recommend to change ethereum gateway RPC in the config file to a private one
-3. Run `brevis join --chainid 1 --quorums 0x01` cmd to opt-in Brevis AVS
-4. Add operator id printed by last `brevis join` command (bytes32 hex string) to config file, note it's NOT your ETH addr
-5. (optional but recommended): Remove ecdsa key info from config file as it's not needed for normal operation. only bls key is needed
-6. Operator runs `brevis run` cmd which monitors Brevis contract for new requests, and signs w/ BLS key, then posts to Brevis gateway
+## Run as an Operator
+1. The `brevis` binary and `brevis.toml` are required to run as an operator. The `brevis` binary should be run under Linux AMD64 system. It can also be built from source with command: go build -o brevis.
+2. Make sure the total stake > 32 eth in Eigen Layer, we support same strategies as Eigen DA
+3. Add bls and ecdsa key of Eigenlayer info to the `brevis.toml` config file, both are required to join Brevis. Also recommend to change ethereum gateway RPC in the config file to a private one
+4. Run `brevis join --chainid 1 --quorums 0x01` cmd to opt-in Brevis AVS
+5. Add operator id printed by last `brevis join` command (bytes32 hex string) to config file, note it's NOT your ETH addr
+6. (optional but recommended): Remove ecdsa key info from config file as it's not needed for normal operation. only bls key is needed
+7. Operator runs `brevis run` cmd which monitors Brevis contract for new requests, and signs w/ BLS key, then posts to Brevis gateway
 
-Contact Brevis team for any issue or questions. The `brevis` binary should be run under Linux AMD64 system.
-The `brevis` binary also can be built from source with command: go build -o brevis.
+Contact Brevis team for any issue or questions. 
 
-## Gateway
+## Gateway Functions
 - `brevis gw` cmd, needs a different config eg. gateway.toml
 - accepts sig requests from eigenlayer operators, aggregate sigs, then send onchain
 - accepts query requests from eigelayer operators, to query the original request data of a request ID
