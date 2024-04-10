@@ -1,8 +1,8 @@
 # Brevis + EigenLayer
 ## Operator
 1. Deposit WETH (at least 1) and/or stETH (at least 0.01) into Eigenlayer
-2. Add bls and ecdsa key of Eigenlayer info to config file  (eg. testnet.toml), both are required to join Brevis
-3. Run `brevis join --chainid 17000 --quorums [quorumhex]` cmd to opt-in Brevis AVS. Quorum 0 is WETH, 2 is stETH. If join both, quorumhex is 0x0002
+2. Add bls and ecdsa key of Eigenlayer info to config file  (eg. brevis.toml), both are required to join Brevis. Also recommend to change ethereum gateway RPC in the config file to a private one
+3. Run `brevis join --chainid 1 --quorums 0x01` cmd to opt-in Brevis AVS
 4. Add operator id printed by last `brevis join` command (bytes32 hex string) to config file, note it's NOT your ETH addr
 5. (optional but recommended): Remove ecdsa key info from config file as it's not needed for normal operation. only bls key is needed
 6. Operator runs `brevis run` cmd which monitors Brevis contract for new requests, and signs w/ BLS key, then posts to Brevis gateway

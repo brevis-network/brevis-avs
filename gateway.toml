@@ -12,13 +12,13 @@ BlkDelay = 2
 BlkInterval = 12
 Brevis = "0x63A825ADD2129410628a8561dDD059646FB49aB0"
 BrvEigen = "0x9FC952BdCbB7Daca7d420fA55b942405B073A89d"
-BrvRegCo = ""
+BrvRegCo = "0x434621cfd8BcDbe8839a33c85aE2B2893a4d596C"
 AVSDir = "0x135dda560e946695d6f155dacafc6f1f25c1f5af"
 
 # must set properly for gw to get old pubkey reg events
 MaxBlkDelta = 50000
 
 # gateway only
-OpStateRetriever = ""
-BlsApkReg = ""
-BlsApkStartBlk = 
+OpStateRetriever = "0xD5D7fB4647cE79740E6e83819EFDf43fa74F8C31"
+BlsApkReg = "0x8F37e6B19563969a4a68E7E2CC048EB005982C84"
+BlsApkStartBlk = 19620721
