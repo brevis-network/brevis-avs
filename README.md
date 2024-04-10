@@ -1,6 +1,6 @@
 # Brevis + EigenLayer
 ## Operator
-1. Deposit WETH (at least 1) and/or stETH (at least 0.01) into Eigenlayer
+1. Make sure total stake > 32 eth, we support same strategies as Eigen DA
 2. Add bls and ecdsa key of Eigenlayer info to config file  (eg. brevis.toml), both are required to join Brevis. Also recommend to change ethereum gateway RPC in the config file to a private one
 3. Run `brevis join --chainid 1 --quorums 0x01` cmd to opt-in Brevis AVS
 4. Add operator id printed by last `brevis join` command (bytes32 hex string) to config file, note it's NOT your ETH addr
