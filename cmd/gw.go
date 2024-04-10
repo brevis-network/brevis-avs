@@ -21,6 +21,7 @@ import (
 	"github.com/Layr-Labs/eigensdk-go/services/avsregistry"
 	blsagg "github.com/Layr-Labs/eigensdk-go/services/bls_aggregation"
 	"github.com/Layr-Labs/eigensdk-go/types"
+	"github.com/consensys/gnark-crypto/ecc/bn254"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
@@ -72,14 +73,16 @@ var gwCmd = &cobra.Command{
 		}
 		log.Println("quroNums:", quroNums, "quroPerc:", quroPerc)
 		chkErr(err, "QuorumNumbers")
+
+		dal := NewDB()
+
 		logger, _ := logging.NewZapLogger(logging.Development)
 		avsreader, _ := avsregclient.BuildAvsRegistryChainReader(Hex2addr(eigenC.BrvRegCo), Hex2addr(eigenC.OpStateRetriever), eigenec, logger)
-		oppub, err := NewOpPkMap(eigenec, Hex2addr(eigenC.BlsApkReg), eigenC.BlsApkStartBlk, eigenC.MaxBlkDelta)
+		oppub, err := NewOpPkMap(eigenec, Hex2addr(eigenC.BlsApkReg), eigenC.BlsApkStartBlk, eigenC.MaxBlkDelta, dal)
 		chkErr(err, "newOpPkMap")
 		avsSvc := avsregistry.NewAvsRegistryServiceChainCaller(avsreader, oppub, logger)
 		blsSvc := blsagg.NewBlsAggregatorService(avsSvc, logger)
 
-		dal := NewDB()
 		svr := &Server{
 			taskIdx:    1,
 			idx2req:    make(map[uint32]ReqInfo),
@@ -348,13 +351,26 @@ func (om *OpPubKeyMap) AddOpPubkey(operator Addr, pk types.OperatorPubkeys) {
 }
 
 // start and fill the map by iter through logs async, so map takes a bit time to fill
-func NewOpPkMap(ec *ethclient.Client, blsapkAddr Addr, origBlk, maxBlkDelta uint64) (*OpPubKeyMap, error) {
+func NewOpPkMap(ec *ethclient.Client, blsapkAddr Addr, origBlk, maxBlkDelta uint64, dal *DB) (*OpPubKeyMap, error) {
 	ret := new(OpPubKeyMap)
 	ret.m = make(map[Addr]types.OperatorPubkeys)
 	// go over events and add
 	go func() {
+		opPubKeys, err := dal.GetAllOpPubKeys()
+		chkErr(err, "dal.GetAllOpPubKeys")
+		for _, pub := range opPubKeys {
+			sdkPubKey := *convertMyToSDK(&pub.PubKey)
+			log.Println("add operator:", pub.Addr.Hex(), ", ", common.Hash(types.OperatorIdFromPubkey(sdkPubKey.G1Pubkey)).Hex())
+			ret.AddOpPubkey(pub.Addr, sdkPubKey)
+		}
+		startBlkFromDB, err := dal.GetBlsApkStartBlk()
+		chkErr(err, "dal.GetBlsApkStartBlk")
+
 		logfilter, _ := NewBLSApkRegFilterer(blsapkAddr, ec)
 		startBlk := origBlk
+		if startBlkFromDB != 0 {
+			startBlk = startBlkFromDB
+		}
 		for {
 			endBlk, _ := ec.BlockNumber(context.Background())
 			if endBlk < startBlk+10 { // don't query too frequent, wait a minute and check again, holesky 12s/block
@@ -372,16 +388,47 @@ func NewOpPkMap(ec *ethclient.Client, blsapkAddr Addr, origBlk, maxBlkDelta uint
 			chkErr(err, "filter pubkey reg")
 			for iter.Next() {
 				ev := iter.Event
-				log.Println("add operator:", ev.Operator.Hex())
-				ret.AddOpPubkey(ev.Operator, types.OperatorPubkeys{
+				pubkey := types.OperatorPubkeys{
 					G1Pubkey: bls.NewG1Point(ev.PubkeyG1.X, ev.PubkeyG1.Y),
 					G2Pubkey: bls.NewG2Point(ev.PubkeyG2.X, ev.PubkeyG2.Y),
+				}
+				log.Println("add operator:", ev.Operator.Hex(), ", ", common.Hash(types.OperatorIdFromPubkey(pubkey.G1Pubkey)).Hex())
+				ret.AddOpPubkey(ev.Operator, pubkey)
+				err := dal.SaveOpPubKey(&OpAddrPubKeyBO{
+					Addr:   ev.Operator,
+					PubKey: *convertSDKToMy(&pubkey),
 				})
+				chkErr(err, "dal.SaveOpPubKey")
 			}
 			startBlk = endBlk // next range of blocks
+			dal.UpdateBlsApkStartBlk(endBlk)
 		}
 	}()
 	return ret, nil
+}
+
+func convertMyToSDK(pubkey *OpPubKey) *types.OperatorPubkeys {
+	var ret types.OperatorPubkeys
+	ret.G1Pubkey = &bls.G1Point{&bn254.G1Affine{}}
+	ret.G2Pubkey = &bls.G2Point{&bn254.G2Affine{}}
+	(&ret.G1Pubkey.X).UnmarshalJSON(pubkey.G1X)
+	(&ret.G1Pubkey.Y).UnmarshalJSON(pubkey.G1Y)
+	(&ret.G2Pubkey.X.A0).UnmarshalJSON(pubkey.G2XA0)
+	(&ret.G2Pubkey.X.A1).UnmarshalJSON(pubkey.G2XA1)
+	(&ret.G2Pubkey.Y.A0).UnmarshalJSON(pubkey.G2YA0)
+	(&ret.G2Pubkey.Y.A1).UnmarshalJSON(pubkey.G2YA1)
+	return &ret
+}
+
+func convertSDKToMy(sdkPubKey *types.OperatorPubkeys) *OpPubKey {
+	var ret OpPubKey
+	ret.G1X, _ = sdkPubKey.G1Pubkey.X.MarshalJSON()
+	ret.G1Y, _ = sdkPubKey.G1Pubkey.Y.MarshalJSON()
+	ret.G2XA0, _ = sdkPubKey.G2Pubkey.X.A0.MarshalJSON()
+	ret.G2XA1, _ = sdkPubKey.G2Pubkey.X.A1.MarshalJSON()
+	ret.G2YA0, _ = sdkPubKey.G2Pubkey.Y.A0.MarshalJSON()
+	ret.G2YA1, _ = sdkPubKey.G2Pubkey.Y.A1.MarshalJSON()
+	return &ret
 }
 
 func ConvertToBN254G1Point(input *bls.G1Point) BN254G1Point {

@@ -3,6 +3,7 @@ package cmd
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/celer-network/goutils/log"
@@ -255,4 +256,18 @@ func getTransactionInfo(c *ethclient.Client, query *TransactionQueryInfo) (*Tran
 type PrepareQueryResponse struct {
 	QueryHash string `json:"query_hash"`
 	Fee       string `json:"fee"`
+}
+
+type OpPubKey struct {
+	G1X   json.RawMessage `json:"g1_x"`
+	G1Y   json.RawMessage `json:"g1_y"`
+	G2XA0 json.RawMessage `json:"g2_x_a0"`
+	G2XA1 json.RawMessage `json:"g2_x_a1"`
+	G2YA0 json.RawMessage `json:"g2_y_a0"`
+	G2YA1 json.RawMessage `json:"g2_y_a1"`
+}
+
+type OpAddrPubKeyBO struct {
+	Addr   common.Address
+	PubKey OpPubKey
 }
