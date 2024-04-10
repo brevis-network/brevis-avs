@@ -1,5 +1,5 @@
 # brevis gateway, will post sig to here
-bgw = "https://testnet-api.brevis.network"
+bgw = "https://api.brevis.network"
 
 # BLS key for eigenlayer
 blspath = ""
@@ -13,12 +13,13 @@ operID = ""
 
 # per chain config
 [[multichain]]
-chainID = 17000
-name = "Holesky"
-gateway = "https://ethereum-holesky-rpc.publicnode.com"
+chainID = 1
+name = "Ethereum mainnet"
+# Private gateway endpoint recommended
+gateway = "https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
 BlkInterval = 12
 BlkDelay = 2
-Brevis = "0xe0A61C0CAa3D8DE34bE6D31Bc4429ff1D51893A8"
-BrvEigen = "0x7A46219950d8a9bf2186549552DA35Bf6fb85b1F"
-BrvRegCo = "0x0dB4ceE042705d47Ef6C0818E82776359c3A80Ca"
-AVSDir = "0x055733000064333CaDDbC92763c58BF0192fFeBf"
+Brevis = "0x63A825ADD2129410628a8561dDD059646FB49aB0"
+BrvEigen = "0x9FC952BdCbB7Daca7d420fA55b942405B073A89d"
+BrvRegCo = ""
+AVSDir = "0x135dda560e946695d6f155dacafc6f1f25c1f5af"

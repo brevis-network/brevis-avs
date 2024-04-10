@@ -31,7 +31,7 @@ The `brevis` binary also can be built from source with command: go build -o brev
 
 ### Endpoint
 1) Holesky Testnet - https://testnet-api.brevis.network
-2) Ethereum Mainnet -
+2) Ethereum Mainnet - https://api.brevis.network
 
 ### Prepare Query
 
@@ -94,6 +94,6 @@ To start a data usage process, the user sends `PrepareQueryRequest` to the gatew
 
 ### Ethereum Mainnet
 
-1) BrevisRequest - 
-2) BrevisProof - 
-3) BrevisEigen -
+1) BrevisRequest - 0x63A825ADD2129410628a8561dDD059646FB49aB0
+2) BrevisProof - 0x9E10764042A2168dE8B8Aab8E7862eF98E759F90
+3) BrevisEigen - 0x9FC952BdCbB7Daca7d420fA55b942405B073A89d
