@@ -1,0 +1,22 @@
+# ecdsa to send onchain tx
+kspath = ""
+kspwd = ""
+
+# per chain config
+[[multichain]]
+chainID = 17000
+name = "Holesky"
+gateway = "wss://ethereum-holesky-rpc.publicnode.com"
+BlkInterval = 12
+Brevis = "0xe0A61C0CAa3D8DE34bE6D31Bc4429ff1D51893A8"
+BrvEigen = "0x7A46219950d8a9bf2186549552DA35Bf6fb85b1F"
+BrvRegCo = "0x0dB4ceE042705d47Ef6C0818E82776359c3A80Ca"
+AVSDir = "0x055733000064333CaDDbC92763c58BF0192fFeBf"
+
+# must set properly for gw to get old pubkey reg events
+MaxBlkDelta = 50000
+
+# gateway only
+OpStateRetriever = "0xB4baAfee917fb4449f5ec64804217bccE9f46C67"
+BlsApkReg = "0x3cA590190337781524F3E6744f48E1b24f111761"
+BlsApkStartBlk = 1224759
