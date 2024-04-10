@@ -8,6 +8,7 @@
 6. Operator runs `brevis run` cmd which monitors Brevis contract for new requests, and signs w/ BLS key, then posts to Brevis gateway
 
 Contact Brevis team for any issue or questions. The `brevis` binary should be run under Linux AMD64 system.
+The `brevis` binary also can be built from source with command: go build -o brevis.
 
 ## Gateway
 - `brevis gw` cmd, needs a different config eg. gateway.toml
