@@ -12,6 +12,52 @@ Suggested hardware configuration: AWS C5/C6 2x large equivalent, 500GB disk, no 
 
 Contact Brevis team for any issue or questions. 
 
+### Run the binary as a systemd service (optional but recommended)
+It is strongly advised to execute the binary in the context of a systemd service, enabling it to operate as a background process or daemon. This configuration ensures that the binary initiates automatically upon system startup or reboot.
+
+1. Make sure to have followed step 1 to 5 from the [Run as an Operator](#run-as-an-operator) section
+2. Create a new systemd service file using your preferred text editor. For example, using vim:
+  ```bash
+  sudo vim /etc/systemd/system/brevis.service
+  ```
+3. Add the following content to the brevis.service file. If necessary, adjust the `ExecStart` and `WorkingDirectory` paths as well as the `User` and `Group`.
+  ```
+  [Unit]
+  Description=Brevis Service
+  After=network.target
+  
+  [Service]
+  User=ubuntu
+  Group=ubuntu
+  WorkingDirectory=/home/ubuntu/brevis-avs
+  ExecStart=/home/ubuntu/brevis-avs/brevis run
+  Restart=always
+  RestartSec=5
+  
+  [Install]
+  WantedBy=multi-user.target
+  ```
+4. Reload the systemd manager configuration to read your newly created service file:
+  ```bash
+  sudo systemctl daemon-reload
+  ```
+5. Enable the service to start at boot:
+  ```bash
+   sudo systemctl enable brevis
+  ```
+6. Start the service immediately:
+  ```bash
+  sudo systemctl start brevis
+  ```
+7. To check the status of your service:
+  ```bash
+  sudo systemctl status brevis
+  ```
+8. To view the logs of your service:
+  ```bash
+  journalctl -u brevis -f
+  ```
+
 ## Gateway Functions（Gateway is Run by Brevis Team）
 - `brevis gw` cmd, needs a different config eg. gateway.toml
 - accepts sig requests from eigenlayer operators, aggregate sigs, then send onchain
