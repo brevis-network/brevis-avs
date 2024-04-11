@@ -4,21 +4,19 @@ kspwd = ""
 
 # per chain config
 [[multichain]]
-chainID = 1
-name = "Ethereum mainnet"
-# Private gateway endpoint recommended
-gateway = "https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
-BlkDelay = 2
+chainID = 17000
+name = "Holesky"
+gateway = "wss://ethereum-holesky-rpc.publicnode.com"
 BlkInterval = 12
-Brevis = "0x63A825ADD2129410628a8561dDD059646FB49aB0"
-BrvEigen = "0x9FC952BdCbB7Daca7d420fA55b942405B073A89d"
-BrvRegCo = "0x434621cfd8BcDbe8839a33c85aE2B2893a4d596C"
-AVSDir = "0x135dda560e946695d6f155dacafc6f1f25c1f5af"
+Brevis = "0xe0A61C0CAa3D8DE34bE6D31Bc4429ff1D51893A8"
+BrvEigen = "0x7A46219950d8a9bf2186549552DA35Bf6fb85b1F"
+BrvRegCo = "0x0dB4ceE042705d47Ef6C0818E82776359c3A80Ca"
+AVSDir = "0x055733000064333CaDDbC92763c58BF0192fFeBf"
 
 # must set properly for gw to get old pubkey reg events
 MaxBlkDelta = 50000
 
 # gateway only
-OpStateRetriever = "0xD5D7fB4647cE79740E6e83819EFDf43fa74F8C31"
-BlsApkReg = "0x8F37e6B19563969a4a68E7E2CC048EB005982C84"
-BlsApkStartBlk = 19620721
+OpStateRetriever = "0xB4baAfee917fb4449f5ec64804217bccE9f46C67"
+BlsApkReg = "0x3cA590190337781524F3E6744f48E1b24f111761"
+BlsApkStartBlk = 1224759
