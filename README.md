@@ -1,12 +1,12 @@
 # Brevis + EigenLayer
-## Run as an Operator
+## Run as an Operator (Holesky Testnet)
 1. The `brevis` binary and `brevis.toml` are required to run as an operator. The `brevis` binary should be run under Linux AMD64 system. It can also be built from source with command: go build -o brevis
-2. Make sure the total stake > 0.01 eth in Eigen Layer, we support same strategies as Eigen DA
-3. Add bls and ecdsa key of Eigenlayer info to the `brevis.toml` config file, both are required to join Brevis. Also recommend to change ethereum gateway RPC in the config file to a private one
-4. Run `brevis join --chainid 1 --quorums 0x01` cmd to opt-in Brevis AVS
-5. Add operator id printed by last `brevis join` command (bytes32 hex string) to config file, note it's NOT your ETH addr
-6. (optional but recommended): Remove ecdsa key info from config file as it's not needed for normal operation. only bls key is needed
-7. Operator runs `brevis run` cmd which monitors Brevis contract for new requests, and signs w/ BLS key, then posts to Brevis gateway
+2. Deposit WETH (at least 1) and/or stETH (at least 0.01) into Eigenlayer
+3. Add bls and ecdsa key of Eigenlayer info to the `brevis.toml` config file, both are required to join Brevis
+3. Run `brevis join --chainid 17000 --quorums [quorumhex]` cmd to opt-in Brevis AVS. Quorum 0 is WETH, 2 is stETH. If join both, quorumhex is 0x0002
+4. Add operator id printed by last `brevis join` command (bytes32 hex string) to config file, note it's NOT your ETH addr
+5. (optional but recommended): Remove ecdsa key info from config file as it's not needed for normal operation. only bls key is needed
+6. Operator runs `brevis run` cmd which monitors Brevis contract for new requests, and signs w/ BLS key, then posts to Brevis gateway
 
 Suggested hardware configuration: AWS C5/C6 2x large equivalent, 500GB disk, no open ports.
 
