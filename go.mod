@@ -7,6 +7,7 @@ toolchain go1.21.8
 require (
 	github.com/Layr-Labs/eigensdk-go v0.1.5
 	github.com/celer-network/goutils v0.1.63
+	github.com/consensys/gnark-crypto v0.12.1
 	github.com/ethereum/go-ethereum v1.13.14
 	github.com/go-gorp/gorp v2.2.0+incompatible
 	github.com/julienschmidt/httprouter v1.3.0
@@ -24,7 +25,6 @@ require (
 	github.com/btcsuite/btcd/btcec/v2 v2.2.0 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/consensys/bavard v0.1.13 // indirect
-	github.com/consensys/gnark-crypto v0.12.1 // indirect
 	github.com/crate-crypto/go-kzg-4844 v0.7.0 // indirect
 	github.com/deckarep/golang-set/v2 v2.1.0 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.1 // indirect
