@@ -6,9 +6,10 @@
 3. Run `brevis join --chainid 17000 --quorums [quorumhex]` cmd to opt-in Brevis AVS. Quorum 0 is WETH, 2 is stETH. If join both, quorumhex is 0x0002
 4. Add operator id printed by last `brevis join` command (bytes32 hex string) to config file, note it's NOT your ETH addr
 5. (optional but recommended): Remove ecdsa key info from config file as it's not needed for normal operation. only bls key is needed
-6. Operator runs `brevis run` cmd which monitors Brevis contract for new requests, and signs w/ BLS key, then posts to Brevis gateway
+6. Operator runs `brevis run` cmd which monitors Brevis contract for new requests, and signs w/ BLS key, then posts to Brevis gateway. Brevis operator process by default uses port 8081 to accept imcoming requests, such as health check. If the port already has been used by other process, please run the cmd with `--port` param to specify another one
+7. Operator can monitor the process alive by checking api: GET /eigen/node/health, http status 200 means OK
 
-Suggested hardware configuration: AWS C5/C6 2x large equivalent, 500GB disk, no open ports.
+Suggested hardware configuration: AWS C5/C6 2x large equivalent, 500GB disk.
 
 Contact Brevis team for any issue or questions. 
 
