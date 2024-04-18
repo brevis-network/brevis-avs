@@ -67,7 +67,7 @@ func PostSig(chainid uint64, brvEigen string, reqid [32]byte, blkNum uint64) err
 		if err != nil {
 			return err
 		}
-		return fmt.Errorf("%s", string(b))
+		return fmt.Errorf("status: %d, msg: %s", resp.StatusCode, string(b))
 	}
 	return nil
 }
