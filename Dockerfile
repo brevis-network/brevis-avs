@@ -20,7 +20,7 @@ RUN go build -o brevis
 FROM alpine:3.19
 
 # Create a brevis user and group with /app as its home directory
-RUN useradd --user-group --create-home --system --skel /dev/null --home-dir /app brevis
+RUN addgroup -S brevis && adduser -k /dev/null -h /app -G brevis -S brevis
 
 # Switch to the new home directory
 WORKDIR /app
