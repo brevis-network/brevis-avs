@@ -59,6 +59,26 @@ It is strongly advised to execute the binary in the context of a systemd service
   journalctl -u brevis -f
   ```
 
+### Run with Docker
+
+Running the service with Docker is a good choice if you want to isolate the service from the host system and a more stateless environment. The following steps will guide you through running the service with Docker.
+
+> Currently, the Docker image is not available in the public registry. Please build the image locally.
+
+1. Build the Docker image
+```bash
+docker build -t brevis-avs .
+```
+> `brevis` binary is the entrypoint of the Docker image. Any command passed to the Docker container will be passed to the `brevis` binary. For example, `docker run brevis-avs join` will run the `brevis join` command. This is useful to follow the [Run as an Operator](#run-as-an-operator) section. 
+
+2. Run the Docker container
+```bash
+docker run \
+  -v /path/to/brevis.toml:/app/brevis.toml \ # Mount the brevis.toml file
+  brevis-avs:latest \
+  run --config /app/brevis.toml
+```
+
 ## Gateway Functions（Gateway is Run by Brevis Team）
 - `brevis gw` cmd, needs a different config eg. gateway.toml
 - accepts sig requests from eigenlayer operators, aggregate sigs, then send onchain
@@ -91,49 +111,49 @@ To start a data usage process, the user sends `PrepareQueryRequest` to the gatew
 
 #### PrepareQueryRequest
 
-| Name | Type | Description |
-| ---- | ---- | ---- |
-| chain_id | uint64 | the data from chain id |
-| target_chain_id | uint64 | the chain uses the data |
-| receipt_query_infos | Array<ReceiptQueryInfo> | list of receipts *optional |
-| storage_query_infos | Array<StorageQueryInfo> | list of storage slots *optional |
-| transaction_query_infos | Array<TransactionQueryInfos> | list of txs *optional |
+| Name                    | Type                         | Description                     |
+| ----------------------- | ---------------------------- | ------------------------------- |
+| chain_id                | uint64                       | the data from chain id          |
+| target_chain_id         | uint64                       | the chain uses the data         |
+| receipt_query_infos     | Array<ReceiptQueryInfo>      | list of receipts *optional      |
+| storage_query_infos     | Array<StorageQueryInfo>      | list of storage slots *optional |
+| transaction_query_infos | Array<TransactionQueryInfos> | list of txs *optional           |
 
 ##### ReceiptQueryInfo
 
-| Name | Type | Description |
-| ---- | ---- | ---- |
-| tx_hash | string | tx hash of the receipt |
+| Name            | Type                | Description                 |
+| --------------- | ------------------- | --------------------------- |
+| tx_hash         | string              | tx hash of the receipt      |
 | log_query_infos | Array<LogQueryInfo> | list of logs in the receipt |
 
 ##### LogQueryInfo
 
-| Name | Type | Description |
-| ---- | ---- | ---- |
-| log_index | uint64 | index of the log in the receipt, start from 0 |
-| is_value_from_topic | bool | true if the value is retrieved from log topic |
-| value_index | uint64 | index of the value in the log, splitted per each 32 bytes if the value is in the log data field |
+| Name                | Type   | Description                                                                                     |
+| ------------------- | ------ | ----------------------------------------------------------------------------------------------- |
+| log_index           | uint64 | index of the log in the receipt, start from 0                                                   |
+| is_value_from_topic | bool   | true if the value is retrieved from log topic                                                   |
+| value_index         | uint64 | index of the value in the log, splitted per each 32 bytes if the value is in the log data field |
 
 ##### StorageQueryInfo
 
-| Name | Type | Description |
-| ---- | ---- | ---- |
-| blk_hash | string | from which block |
-| account | string | address of the account to retrieve storage slot value from |
-| slot | string | slot key |
+| Name     | Type   | Description                                                |
+| -------- | ------ | ---------------------------------------------------------- |
+| blk_hash | string | from which block                                           |
+| account  | string | address of the account to retrieve storage slot value from |
+| slot     | string | slot key                                                   |
 
 ##### TransactionQueryInfo
 
-| Name | Type | Description |
-| ---- | ---- | ---- |
-| tx_hash | string | tx hash |
+| Name    | Type   | Description |
+| ------- | ------ | ----------- |
+| tx_hash | string | tx hash     |
 
 #### PrepareQueryResponse
 
-| Name | Type | Description |
-| ---- | ---- | ---- |
-| query_hash | string | the generated request id |
-| fee | string | fee, charge gas token in WEI |
+| Name       | Type   | Description                  |
+| ---------- | ------ | ---------------------------- |
+| query_hash | string | the generated request id     |
+| fee        | string | fee, charge gas token in WEI |
 
 ## Deployment
 ### Holesky Testnet
