@@ -3,7 +3,7 @@
 1. The `brevis` binary and `brevis.toml` are required to run as an operator. The `brevis` binary should be run under Linux AMD64 system. It can also be built from source with command: go build -o brevis
 2. Make sure the total stake > 0.01 eth in Eigen Layer, we support same strategies as Eigen DA
 3. Add bls and ecdsa key of Eigenlayer info to the `brevis.toml` config file, both are required to join Brevis. Also recommend to change ethereum gateway RPC in the config file to a private one
-4. Run `brevis join --chainid 1 --quorums 0x01` cmd to opt-in Brevis AVS
+4. Run `brevis join --chainid 1` cmd to opt-in Brevis AVS
 5. Add operator id printed by last `brevis join` command (bytes32 hex string) to config file, note it's NOT your ETH addr
 6. (optional but recommended): Remove ecdsa key info from config file as it's not needed for normal operation. only bls key is needed
 7. Operator runs `brevis run` cmd which monitors Brevis contract for new requests, and signs w/ BLS key, then posts to Brevis gateway. Brevis operator process by default uses port 8081 to accept imcoming requests, such as health check. If the port already has been used by other process, please run the cmd with `--port` param to specify another one
@@ -165,4 +165,4 @@ To start a data usage process, the user sends `PrepareQueryRequest` to the gatew
 
 1) BrevisRequest - 0x63A825ADD2129410628a8561dDD059646FB49aB0
 2) BrevisProof - 0x9E10764042A2168dE8B8Aab8E7862eF98E759F90
-3) BrevisEigen - 0x9FC952BdCbB7Daca7d420fA55b942405B073A89d
+3) BrevisEigen - 0x0328635BA5FF28476118595234b5b7236b906c0B

@@ -11,8 +11,8 @@ gateway = "https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
 BlkDelay = 2
 BlkInterval = 12
 Brevis = "0x63A825ADD2129410628a8561dDD059646FB49aB0"
-BrvEigen = "0x9FC952BdCbB7Daca7d420fA55b942405B073A89d"
-BrvRegCo = "0x434621cfd8BcDbe8839a33c85aE2B2893a4d596C"
+BrvEigen = "0x0328635BA5FF28476118595234b5b7236b906c0B"
+BrvRegCo = "0x8B83b9808DE79D5EEE97417bB14f82c41bCcD6F0"
 AVSDir = "0x135dda560e946695d6f155dacafc6f1f25c1f5af"
 
 # must set properly for gw to get old pubkey reg events
@@ -20,5 +20,5 @@ MaxBlkDelta = 50000
 
 # gateway only
 OpStateRetriever = "0xD5D7fB4647cE79740E6e83819EFDf43fa74F8C31"
-BlsApkReg = "0x8F37e6B19563969a4a68E7E2CC048EB005982C84"
+BlsApkReg = "0xb258A34450666d838621dFA9a0063193e7edF308"
 BlsApkStartBlk = 19620721
